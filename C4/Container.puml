@@ -1,0 +1,35 @@
+@startuml
+
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+!define DEVICONS https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/devicons2
+
+!include DEVICONS/angularjs.puml
+!include DEVICONS/csharp.puml
+!include DEVICONS/postgresql.puml
+
+Person(GuestUser, "Guest", "Guest account")
+Person(HotelUser, "Hotel", "Hotel account")
+Person(PartnerUser, "Partner", "Partner account")
+Person(AdminUser, "Admin", "Admin account")
+
+System_Ext(BankingSystem, "Banking System", "Provides money transations")
+System_Ext(PartnerSystem, "Partner's System", "System of a partner like shop, tour operator and etc.")
+System_Ext(EmailSystem, "E-mail System", "Any e-mail system")
+System_Ext(HotelSystem, "Hotel System", "A hotel that one of the hotel accounts represent")
+
+System_Boundary(container, "System") {
+	Container(spa, "Single-Page Applicaiton", "TypeScript and Angular", "Provides all functionality for hotel booking via web-browser", $sprite="angularjs")
+
+	Container(api, "API Application", "C# and ASP.NET Core", "Provides all functionality for hotel booking via a JSON/HTTPS API", $sprite="csharp")
+
+	Container(web, "Web Application", "C# and ASP.NET Core", "Delivers static content and hotel booking single-page application", $sprite="csharp")
+
+	Container(auth, "Auth Service", "C# and ASP.NET Core", "Responsible for operations with user accounts like authentication, registration, user roles and etc.", $sprite="csharp")
+
+	'TODO: Add analytics application, hotel connector application, message bus, ELK stack
+
+	ContainerDb(db, "Database", "PostgreSQL", "Stores user, reservations, reviews and other information", $sprite="postgresql")
+}
+
+@enduml
