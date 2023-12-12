@@ -2,34 +2,69 @@
 
 !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
 
-!define DEVICONS https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/devicons2
+!define DEVICONS https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/devicons
+!define DEVICONS2 https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/devicons2
 
-!include DEVICONS/angularjs.puml
-!include DEVICONS/csharp.puml
-!include DEVICONS/postgresql.puml
+!include DEVICONS/database.puml
+!include DEVICONS2/angularjs.puml
+!include DEVICONS2/csharp.puml
+!include DEVICONS2/postgresql.puml
 
-Person(GuestUser, "Guest", "Guest account")
-Person(HotelUser, "Hotel", "Hotel account")
-Person(PartnerUser, "Partner", "Partner account")
-Person(AdminUser, "Admin", "Admin account")
+Person(User, "User")
 
 System_Ext(BankingSystem, "Banking System", "Provides money transations")
 System_Ext(PartnerSystem, "Partner's System", "System of a partner like shop, tour operator and etc.")
 System_Ext(EmailSystem, "E-mail System", "Any e-mail system")
 System_Ext(HotelSystem, "Hotel System", "A hotel that one of the hotel accounts represent")
 
-System_Boundary(container, "System") {
-	Container(spa, "Single-Page Applicaiton", "TypeScript and Angular", "Provides all functionality for hotel booking via web-browser", $sprite="angularjs")
+System_Boundary(Hb_container, "Hotel Booking") {
+	Container(Spa, "Single-Page Applicaiton", "TypeScript and Angular", "Provides all functionality for hotel booking via web-browser", $sprite="angularjs")
 
-	Container(api, "API Application", "C# and ASP.NET Core", "Provides all functionality for hotel booking via a JSON/HTTPS API", $sprite="csharp")
+	Container(Api, "API Application", "C# and ASP.NET Core", "Provides all functionality for hotel booking via a JSON/HTTPS API", $sprite="csharp")
 
-	Container(web, "Web Application", "C# and ASP.NET Core", "Delivers static content and hotel booking single-page application", $sprite="csharp")
+	Container(Web, "Web Application", "C# and ASP.NET Core", "Delivers static content and hotel booking single-page application", $sprite="csharp")
 
-	Container(auth, "Auth Service", "C# and ASP.NET Core", "Responsible for operations with user accounts like authentication, registration, user roles and etc.", $sprite="csharp")
+	Container(Auth, "Auth Service", "C# and ASP.NET Core", "Responsible for operations with user accounts like authentication, registration, user roles and etc.", $sprite="csharp")
+
+	ContainerDb(HotelBookingDb, "Database", "PostgreSQL", "Stores user, reservations, reviews and other information", $sprite="postgresql")
+
+	Container(Analytics, "Analytics API Application", "C# and ASP.NET Core", "Gathers information of user's actions and analyses it", $sprite="csharp")
+
+	ContainerDb(AnalyticsDb, "Analytics Database", "ClickHouse", "Database for analytical processing", $sprite="database")
 
 	'TODO: Add analytics application, hotel connector application, message bus, ELK stack
 
-	ContainerDb(db, "Database", "PostgreSQL", "Stores user, reservations, reviews and other information", $sprite="postgresql")
+	Container(Filebeat, "Filebeat", "", "Parses log files and sends them to ELK stack")
+
+	Rel_R(Web, Spa, "Delivers content to the customer's web browser")
+	Rel(Spa, Api, "Makes API calls to", "JSON/HTTPS")
+	Rel_L(Api, Auth, "Sends information about user to and gets it from", "JSON/HTTPS")
+	Rel_D(Api, HotelBookingDb, "Reads from and writes to", "SQL/TCP")
+	Rel_D(Auth, HotelBookingDb, "Reads from and writes to", "SQL/TCP")
+
+	Rel_D(Analytics, AnalyticsDb, "Reads from and writes to", "SQL/TCP")
+	Rel_D(Api, Analytics, "Sends data for analysis to", "HTTPS")
+
+	Rel_D(User, Web, "Visits site using", "HTTPS")
+	Rel_D(User, Spa, "Views hotels, manages reservations, reviews and etc.")
+
+	Rel_D(Api, EmailSystem, "Sends e-mails using", "HTTPS")
+	Rel_D(Api, BankingSystem, "Makes payments using", "HTTPS")
+	Rel_D(Api, PartnerSystem, "Gets information about special offers and promotions from", "https")
+	Rel_D(Api, HotelSystem, "Sends information about guests' reservations to, and gets data about free rooms, prices and promotions from", "https")
 }
+
+Rel_U(EmailSystem, User, "Sends e-mails to", "HTTPS")
+
+System_Boundary(monitoring_container, "ELK Stack") {
+	Container(Logstash, "Logstash", "", "Collects data, transforms it and sends it to destination")
+	Container(Elasticsearch, "Elasticsearch", "", "Distributed search and analytics engine")
+	Container(Kibana, "Kibana", "", "Data visualization and exploration tool")
+
+	Rel_D(Logstash, Elasticsearch, "Sends data to", "HTTPS")
+	Rel_D(Elasticsearch, Kibana, "Sends data to", "HTTPS")
+}
+
+Rel_L(Filebeat, Logstash, "Sends data to", "HTTPS")
 
 @enduml
