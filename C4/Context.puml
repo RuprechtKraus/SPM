@@ -8,6 +8,9 @@ Person(PartnerUser, "Partner", "Partner account")
 Person(AdminUser, "Admin", "Admin account")
 
 System(HotelBookingSystem, "Hotel Booking System", "Allows customers to search for hotels, book them, manage reviews and integrate with partners")
+System(MonitoringSystem, "ELK Stack Monitoring", "Allows storing, processing and visualization of logs")
+
+Rel(HotelBookingSystem, MonitoringSystem, "Sends logs to", "https")
 
 Rel(GuestUser, HotelBookingSystem, "Searches for hotels, books rooms, manages their reservations and hotel reviews")
 Rel(HotelUser, HotelBookingSystem, "Manages information about rooms and services, manages reservations, replies to guests' reviews, manages rate plans")
