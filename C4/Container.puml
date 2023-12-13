@@ -20,11 +20,17 @@ System_Ext(HotelSystem, "Hotel System", "A hotel that one of the hotel accounts 
 System_Boundary(Hb_container, "Hotel Booking") {
 	Container(Spa, "Single-Page Applicaiton", "TypeScript and Angular", "Provides all functionality for hotel booking via web-browser", $sprite="angularjs")
 
-	Container(Api, "API Application", "C# and ASP.NET Core", "Provides all functionality for hotel booking via a JSON/HTTPS API", $sprite="csharp")
+	'Container(Api, "API Application", "C# and ASP.NET Core", "Provides all functionality for hotel booking via a JSON/HTTPS API", $sprite="csharp")
+
+	Container(Booking, "Booking Service", "C# and ASP.NET Core", "Provides all functionality for hotel booking via a JSON/HTTPS API", $sprite="csharp")
+
+	Container(PartnerService, "Partner Service", "C# and ASP.NET Core", "Communicates partner data, special offers and etc. via a JSON/HTTPS API", $sprite="csharp")
 
 	Container(Web, "Web Application", "C# and ASP.NET Core", "Delivers static content and hotel booking single-page application", $sprite="csharp")
 
 	Container(Auth, "Auth Service", "C# and ASP.NET Core", "Responsible for operations with user accounts like authentication, registration, user roles and etc.", $sprite="csharp")
+
+	Container(Reviews, "Reviews Service", "C# and ASP.NET Core", "Responsible for managing reviews", $sprite="csharp")
 
 	ContainerDb(HotelBookingDb, "Database", "PostgreSQL", "Stores user, reservations, reviews and other information", $sprite="postgresql")
 
@@ -32,39 +38,32 @@ System_Boundary(Hb_container, "Hotel Booking") {
 
 	ContainerDb(AnalyticsDb, "Analytics Database", "ClickHouse", "Database for analytical processing", $sprite="database")
 
-	'TODO: Add analytics application, hotel connector application, message bus, ELK stack
-
-	Container(Filebeat, "Filebeat", "", "Parses log files and sends them to ELK stack")
+	'TODO: Add analytics application, hotel connector application
 
 	Rel_R(Web, Spa, "Delivers content to the customer's web browser")
-	Rel(Spa, Api, "Makes API calls to", "JSON/HTTPS")
-	Rel_L(Api, Auth, "Sends information about user to and gets it from", "JSON/HTTPS")
-	Rel_D(Api, HotelBookingDb, "Reads from and writes to", "SQL/TCP")
+	Rel(Spa, Booking, "Makes API calls to", "JSON/HTTPS")
+	Rel_L(Spa, Auth, "Sends information about user to and gets it from", "JSON/HTTPS")
+	Rel_L(Booking, PartnerService, "Makes API calls to", "JSON/HTTPS")
+	Rel_D(Spa, Reviews, "Makes API calls to", "JSON/HTTPS")
+	Rel_D(Spa, PartnerService, "Makes API calls to", "JSON/HTTPS")
+
+	Rel_D(Booking, HotelBookingDb, "Reads from and writes to", "SQL/TCP")
 	Rel_D(Auth, HotelBookingDb, "Reads from and writes to", "SQL/TCP")
+	Rel_D(Reviews, HotelBookingDb, "Reads from and writes to", "SQL/TCP")
+	Rel_D(PartnerService, HotelBookingDb, "Reads from and writes to", "SQL/TCP")
 
 	Rel_D(Analytics, AnalyticsDb, "Reads from and writes to", "SQL/TCP")
-	Rel_D(Api, Analytics, "Sends data for analysis to", "HTTPS")
+	Rel_D(Booking, Analytics, "Sends data for analysis to", "HTTPS")
 
 	Rel_D(User, Web, "Visits site using", "HTTPS")
 	Rel_D(User, Spa, "Views hotels, manages reservations, reviews and etc.")
 
-	Rel_D(Api, EmailSystem, "Sends e-mails using", "HTTPS")
-	Rel_D(Api, BankingSystem, "Makes payments using", "HTTPS")
-	Rel_D(Api, PartnerSystem, "Gets information about special offers and promotions from", "https")
-	Rel_D(Api, HotelSystem, "Sends information about guests' reservations to, and gets data about free rooms, prices and promotions from", "https")
+	Rel_D(Booking, EmailSystem, "Sends e-mails using", "HTTPS")
+	Rel_D(Booking, BankingSystem, "Makes payments using", "HTTPS")
+	Rel_D(PartnerService, PartnerSystem, "Gets information about special offers and promotions from", "https")
+	Rel_D(Booking, HotelSystem, "Sends information about guests' reservations to, and gets data about free rooms, prices and promotions from", "https")
 }
 
-Rel_U(EmailSystem, User, "Sends e-mails to", "HTTPS")
-
-System_Boundary(monitoring_container, "ELK Stack") {
-	Container(Logstash, "Logstash", "", "Collects data, transforms it and sends it to destination")
-	Container(Elasticsearch, "Elasticsearch", "", "Distributed search and analytics engine")
-	Container(Kibana, "Kibana", "", "Data visualization and exploration tool")
-
-	Rel_D(Logstash, Elasticsearch, "Sends data to", "HTTPS")
-	Rel_D(Elasticsearch, Kibana, "Sends data to", "HTTPS")
-}
-
-Rel_L(Filebeat, Logstash, "Sends data to", "HTTPS")
+Rel_U(User, EmailSystem, "Reads e-mails from", "HTTPS")
 
 @enduml
