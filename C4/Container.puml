@@ -20,7 +20,7 @@ System_Ext(HotelSystem, "Hotel System", "A hotel that one of the hotel accounts 
 System_Boundary(Hb_container, "Hotel Booking") {
 	Container(Spa, "Single-Page Applicaiton", "TypeScript and Angular", "Provides all functionality for hotel booking via web-browser", $sprite="angularjs")
 
-	'Container(Api, "API Application", "C# and ASP.NET Core", "Provides all functionality for hotel booking via a JSON/HTTPS API", $sprite="csharp")
+	Container(Api, "API Application", "C# and ASP.NET Core", "Provides all functionality for hotel booking via a JSON/HTTPS API", $sprite="csharp")
 
 	Container(Booking, "Booking Service", "C# and ASP.NET Core", "Provides all functionality for hotel booking via a JSON/HTTPS API", $sprite="csharp")
 
@@ -41,11 +41,12 @@ System_Boundary(Hb_container, "Hotel Booking") {
 	'TODO: Add analytics application, hotel connector application
 
 	Rel_R(Web, Spa, "Delivers content to the customer's web browser")
-	Rel(Spa, Booking, "Makes API calls to", "JSON/HTTPS")
-	Rel_L(Spa, Auth, "Sends information about user to and gets it from", "JSON/HTTPS")
 	Rel_L(Booking, PartnerService, "Makes API calls to", "JSON/HTTPS")
-	Rel_D(Spa, Reviews, "Makes API calls to", "JSON/HTTPS")
-	Rel_D(Spa, PartnerService, "Makes API calls to", "JSON/HTTPS")
+	Rel_D(Spa, Api, "Makes API calls to", "JSON/HTTPS")
+	Rel_D(Api, Booking, "Makes API calls to", "JSON/HTTPS")
+	Rel_D(Api, Auth, "Sends information about user to and gets it from", "JSON/HTTPS")
+	Rel_D(Api, Reviews, "Makes API calls to", "JSON/HTTPS")
+	Rel_D(Api, PartnerService, "Makes API calls to", "JSON/HTTPS")
 
 	Rel_D(Booking, HotelBookingDb, "Reads from and writes to", "SQL/TCP")
 	Rel_D(Auth, HotelBookingDb, "Reads from and writes to", "SQL/TCP")
@@ -54,6 +55,8 @@ System_Boundary(Hb_container, "Hotel Booking") {
 
 	Rel_D(Analytics, AnalyticsDb, "Reads from and writes to", "SQL/TCP")
 	Rel_D(Booking, Analytics, "Sends data for analysis to", "HTTPS")
+	Rel_D(Reviews, Analytics, "Sends data for analysis to", "HTTPS")
+	Rel_D(PartnerService, Analytics, "Sends data for analysis to", "HTTPS")
 
 	Rel_D(User, Web, "Visits site using", "HTTPS")
 	Rel_D(User, Spa, "Views hotels, manages reservations, reviews and etc.")
