@@ -13,7 +13,6 @@
 Person(User, "User")
 
 System_Ext(BankingSystem, "Banking System", "Provides money transations")
-System_Ext(PartnerSystem, "Partner's System", "System of a partner like shop, tour operator and etc.")
 System_Ext(EmailSystem, "E-mail System", "Any e-mail system")
 System_Ext(HotelSystem, "Hotel System", "A hotel that one of the hotel accounts represent")
 
@@ -37,8 +36,6 @@ System_Boundary(Hb_container, "Hotel Booking") {
 	Container(Analytics, "Analytics API Application", "C# and ASP.NET Core", "Gathers information of user's actions and analyses it", $sprite="csharp")
 
 	ContainerDb(AnalyticsDb, "Analytics Database", "ClickHouse", "Database for analytical processing", $sprite="database")
-
-	'TODO: Add analytics application, hotel connector application
 
 	Rel_R(Web, Spa, "Delivers content to the customer's web browser")
 	Rel_L(Booking, PartnerService, "Makes API calls to", "JSON/HTTPS")
