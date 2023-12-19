@@ -1,0 +1,37 @@
+@startuml
+
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+!define DEVICONS2 https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/devicons2
+
+!include DEVICONS2/csharp.puml
+!include DEVICONS2/postgresql.puml
+
+Container(Api, "API Application", "C# and ASP.NET Core", "Provides all functionality for hotel booking via a JSON/HTTPS API", $sprite="csharp")
+
+ContainerDb(Database, "Database", "PostgreSQL", "Stores user, reservations, reviews and other information", $sprite="postgresql")
+
+Container_Boundary(Accountervice, "Account Service") {
+	Component(UserController, "User Controller", "C# and ASP.NET Core", "Allows actions on user account")
+	Component(HotelController, "Hotel Controller", "C# and ASP.NET Core", "Allows actions on hotel owner account")
+	Component(PartnerController, "Partner Controller", "C# and ASP.NET Core", "Allows actions on partner user account")
+
+	Rel_D(Api, UserController, "Makes API calls to", "JSON/HTTPS")
+	Rel_D(Api, HotelController, "Makes API calls to", "JSON/HTTPS")
+	Rel_D(Api, PartnerController, "Makes API calls to", "JSON/HTTPS")
+
+	Component(UserService, "User Service", "C# and ASP.NET Core")
+	Component(HotelService, "Hotel Service", "C# and ASP.NET Core")
+	Component(PartnerService, "Partner Service", "C# and ASP.NET Core")
+
+	Rel_D(UserController, UserService, "Uses")
+	Rel_D(HotelController, HotelService, "Uses")
+	Rel_D(PartnerController, PartnerService, "Uses")
+
+	Rel_D(UserService, Database, "Reads from and writes to", "SQL/TCP")
+	Rel_D(HotelService, Database, "Reads from and writes to", "SQL/TCP")
+	Rel_D(PartnerService, Database, "Reads from and writes to", "SQL/TCP")
+}
+
+@enduml

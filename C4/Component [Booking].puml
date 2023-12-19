@@ -1,0 +1,61 @@
+@startuml
+
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+!define DEVICONS2 https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/devicons2
+
+!include DEVICONS2/csharp.puml
+!include DEVICONS2/postgresql.puml
+
+Container(Api, "API Application", "C# and ASP.NET Core", "Provides all functionality for hotel booking via a JSON/HTTPS API", $sprite="csharp")
+
+Container(PartnerService, "Partner Service", "C# and ASP.NET Core", "Communicates partner data, special offers and etc. via a JSON/HTTPS API", $sprite="csharp")
+
+Container(AnalyticsService, "Analytics API Application", "C# and ASP.NET Core", "Gathers information of user's actions and analyses it", $sprite="csharp")
+
+ContainerDb(Database, "Database", "PostgreSQL", "Stores user, reservations, reviews and other information", $sprite="postgresql")
+
+System_Ext(BankingSystem, "Banking System", "Provides money transations")
+System_Ext(EmailSystem, "E-mail System", "Any e-mail system")
+System_Ext(HotelSystem, "Hotel System", "A hotel that one of the hotel accounts represent")
+
+Container_Boundary(BookingService, "Booking Service") {
+    Component(BookingController, "Booking Controller", "C# and ASP.NET Core", "Allows users to manage their reservations")
+
+    Component(BookingEngine, "Booking Engine", "C#", "Handles the actual booking process, search for availability, making reservations and etc.")
+    Component(ReservationManager, "Reservation Manager", "C#", "Manages existing reservations: modifications, cancellations, confirmations")
+
+    Rel_D(Api, BookingController, "Makes API calls to", "JSON/HTTPS")
+
+    Rel_D(BookingController, BookingEngine, "Uses")
+    Rel_D(BookingController, ReservationManager, "User")
+
+    Rel_R(BookingEngine, PartnerService, "Uses")
+    Rel_R(ReservationManager, PartnerService, "Uses")
+
+    Rel(BookingEngine, AnalyticsService, "Uses")
+    Rel(ReservationManager, AnalyticsService, "Uses")
+
+    Component(EmailComponent, "E-mail Component", "C#", "Sends e-mails to users")
+    Component(HotelFacade, "Hotel System Facade", "C#", "A facade onto the external hotel system")
+    Component(BankingFacade, "Banking System Facade", "C#", "A facade onto the external bankging system")
+
+    Rel_L(BookingEngine, Database, "Reads from and writes to", "SQL/TCP")
+    Rel_L(ReservationManager, Database, "Reads from and writes to", "SQL/TCP")
+
+    Rel_D(BookingEngine, EmailComponent, "Uses")
+    Rel_D(ReservationManager, EmailComponent, "Uses")
+
+    Rel_D(BookingEngine, HotelFacade, "Uses")
+    Rel_D(ReservationManager, HotelFacade, "Uses")
+
+    Rel_D(BookingEngine, BankingFacade, "Uses")
+    Rel_D(ReservationManager, BankingFacade, "Uses")
+
+    Rel_D(EmailComponent, EmailSystem, "Sends e-mails using", "JSON/HTTPS")
+    Rel_D(HotelFacade, HotelSystem, "Makes API calls to", "JSON/HTTPS")
+    Rel_D(BankingFacade, BankingSystem, "Makes API calls to", "JSON/HTTPS")
+}
+
+@enduml
