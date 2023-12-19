@@ -13,6 +13,7 @@
 Person(User, "User")
 
 System_Ext(BankingSystem, "Banking System", "Provides money transations")
+System_Ext(PartnerSystem, "Partner's System", "System of a partner like shop, tour operator and etc.")
 System_Ext(EmailSystem, "E-mail System", "Any e-mail system")
 System_Ext(HotelSystem, "Hotel System", "A hotel that one of the hotel accounts represent")
 
@@ -31,6 +32,8 @@ System_Boundary(Hb_container, "Hotel Booking") {
 
 	Container(Reviews, "Reviews Service", "C# and ASP.NET Core", "Responsible for managing reviews", $sprite="csharp")
 
+	Container(AdminService, "Admin Service", "C# and ASP.NET Core", "Allows admin actions like banning users, participating in conflict resoltions and etc.")
+
 	ContainerDb(HotelBookingDb, "Database", "PostgreSQL", "Stores user, reservations, reviews and other information", $sprite="postgresql")
 
 	Container(Analytics, "Analytics API Application", "C# and ASP.NET Core", "Gathers information of user's actions and analyses it", $sprite="csharp")
@@ -44,11 +47,13 @@ System_Boundary(Hb_container, "Hotel Booking") {
 	Rel_D(Api, Auth, "Sends information about user to and gets it from", "JSON/HTTPS")
 	Rel_D(Api, Reviews, "Makes API calls to", "JSON/HTTPS")
 	Rel_D(Api, PartnerService, "Makes API calls to", "JSON/HTTPS")
+	Rel_D(Api, AdminService, "Makes API calls to", "JSON/HTTPS")
 
 	Rel_D(Booking, HotelBookingDb, "Reads from and writes to", "SQL/TCP")
 	Rel_D(Auth, HotelBookingDb, "Reads from and writes to", "SQL/TCP")
 	Rel_D(Reviews, HotelBookingDb, "Reads from and writes to", "SQL/TCP")
 	Rel_D(PartnerService, HotelBookingDb, "Reads from and writes to", "SQL/TCP")
+	Rel_D(AdminService, HotelBookingDb, "Reads from and writes to", "SQL/TCP")
 
 	Rel_D(Analytics, AnalyticsDb, "Reads from and writes to", "SQL/TCP")
 	Rel_D(Booking, Analytics, "Sends data for analysis to", "HTTPS")
