@@ -28,11 +28,11 @@ System_Boundary(Hb_container, "Hotel Booking") {
 
 	Container(Web, "Web Application", "C# and ASP.NET Core", "Delivers static content and hotel booking single-page application", $sprite="csharp")
 
-	Container(Auth, "Auth Service", "C# and ASP.NET Core", "Responsible for operations with user accounts like authentication, registration, user roles and etc.", $sprite="csharp")
+	Container(Account, "Account Service", "C# and ASP.NET Core", "Responsible for operations with user accounts like authentication, registration, user roles, user info and etc.", $sprite="csharp")
 
 	Container(Reviews, "Reviews Service", "C# and ASP.NET Core", "Responsible for managing reviews", $sprite="csharp")
 
-	Container(AdminService, "Admin Service", "C# and ASP.NET Core", "Allows admin actions like banning users, participating in conflict resoltions and etc.")
+	Container(AdminService, "Admin Service", "C# and ASP.NET Core", "Allows admin actions like banning users, participating in conflict resoltions and etc.", $sprite="csharp")
 
 	ContainerDb(HotelBookingDb, "Database", "PostgreSQL", "Stores user, reservations, reviews and other information", $sprite="postgresql")
 
@@ -44,13 +44,13 @@ System_Boundary(Hb_container, "Hotel Booking") {
 	Rel_L(Booking, PartnerService, "Makes API calls to", "JSON/HTTPS")
 	Rel_D(Spa, Api, "Makes API calls to", "JSON/HTTPS")
 	Rel_D(Api, Booking, "Makes API calls to", "JSON/HTTPS")
-	Rel_D(Api, Auth, "Sends information about user to and gets it from", "JSON/HTTPS")
+	Rel_D(Api, Account, "Sends information about user to and gets it from", "JSON/HTTPS")
 	Rel_D(Api, Reviews, "Makes API calls to", "JSON/HTTPS")
 	Rel_D(Api, PartnerService, "Makes API calls to", "JSON/HTTPS")
 	Rel_D(Api, AdminService, "Makes API calls to", "JSON/HTTPS")
 
 	Rel_D(Booking, HotelBookingDb, "Reads from and writes to", "SQL/TCP")
-	Rel_D(Auth, HotelBookingDb, "Reads from and writes to", "SQL/TCP")
+	Rel_D(Account, HotelBookingDb, "Reads from and writes to", "SQL/TCP")
 	Rel_D(Reviews, HotelBookingDb, "Reads from and writes to", "SQL/TCP")
 	Rel_D(PartnerService, HotelBookingDb, "Reads from and writes to", "SQL/TCP")
 	Rel_D(AdminService, HotelBookingDb, "Reads from and writes to", "SQL/TCP")
