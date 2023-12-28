@@ -1,0 +1,23 @@
+@startuml
+start
+
+:Search for Rooms;
+:Select Room;
+:Enter Guest Details;
+:Choose Payment Method;
+
+if (Payment Method) then (Online)
+  :Process Online Payment;
+  if (Payment Successful?) then (yes)
+    :Confirm Booking;
+    :Send Confirmation Email;
+  else (no)
+    :Display Payment Error;
+  endif
+else (On Location)
+  :Book Room, Pay on Arrival;
+  :Send Booking Confirmation;
+endif
+
+stop
+@enduml
