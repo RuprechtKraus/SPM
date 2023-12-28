@@ -7,8 +7,6 @@
 [Api gateway]
 [Load Balancer]
 
-cloud "External systems"
-
 [User browser] --> [Api gateway]
 [User mobile app] --> [Api gateway]
 [Api gateway] --> [Load Balancer]
@@ -26,14 +24,21 @@ package "Kubernetes Cluster" {
     }
 }
 
-package "Database cluster" {
-    database "Database"
-    database "Analytics Database"
+package "External Services" {
+    database "DB"
+    database "Analytics DB"
+    [Message Queue]
+}
+
+cloud "External Systems" {
+    [Email System]
+    [Partner System]
+    [Banking System]
+    [Hotel System]
 }
 
 [Load Balancer] --> [k8s node]
-[k8s node] --> [Database]
-[k8s node] --> [Analytics Database]
-[k8s node] --> [External systems]
+[k8s node] --> [External Services]
+[k8s node] --> [External Systems]
 
 @enduml
