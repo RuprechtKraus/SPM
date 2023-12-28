@@ -1,0 +1,22 @@
+@startuml
+skinparam monochrome true
+
+component [Elasticsearch] as ES
+component [Logstash] as LS
+component [Kibana] as Kibana
+component [Filebeat] as FB
+component [Monitored Systems] as Systems
+
+Systems --> FB : Sends Logs
+FB --> LS : Forwards Logs
+LS --> ES : Processes and Stores Logs
+ES --> Kibana : Data Indexing
+Kibana --> User : Visualization
+
+note right of ES : Regular Data Backup
+note right of LS : Log Parsing Rules Update
+note left of Kibana : Visualization Dashboard Maintenance
+note left of FB : Log Forwarding Configuration
+note bottom of Systems : Monitoring for Performance
+
+@enduml

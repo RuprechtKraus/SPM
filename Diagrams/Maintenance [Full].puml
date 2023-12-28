@@ -1,0 +1,26 @@
+@startuml
+skinparam monochrome true
+
+component [User Interface] as UI
+component [Booking Engine] as Engine
+component [Payment Gateway]
+component [Database]
+component [API Gateway]
+component [Server Infrastructure]
+component [Security System]
+
+UI --> Engine : User Bookings
+Engine --> Database : Data Processing
+Engine --> "Payment Gateway" : Payment Handling
+"API Gateway" --> Engine : External Services Integration
+"Server Infrastructure" --> [All Components] : Hosting
+"Security System" --> [All Components] : Security Enforcement
+
+note bottom of UI : Regular UI Updates\nUsability Testing
+note right of Engine : Feature Updates\nPerformance Monitoring
+note left of "Payment Gateway" : Compliance Audits\nTransaction Security Checks
+note right of Database : Data Backup\nDatabase Optimization
+note right of "API Gateway" : API Management\nIntegration Testing
+note top of "Server Infrastructure" : Hardware Maintenance\nNetwork Checks
+note bottom of "Security System" : Security Audits\nVulnerability Assessments
+@enduml
