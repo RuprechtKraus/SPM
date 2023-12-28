@@ -1,0 +1,39 @@
+@startuml
+
+'Items
+[User browser]
+[User mobile app]
+
+[Api gateway]
+[Load Balancer]
+
+cloud "External systems"
+
+[User browser] --> [Api gateway]
+[User mobile app] --> [Api gateway]
+[Api gateway] --> [Load Balancer]
+
+package "Kubernetes Cluster" {
+    node "k8s node" {
+        [Web app and SPA POD]
+        [API application POD]
+        [Account service POD]
+        [Admin service POD]
+        [Reviews service POD]
+        [Partner service POD]
+        [Booking service POD]
+        [Analytics API application POD]
+    }
+}
+
+package "Database cluster" {
+    database "Database"
+    database "Analytics Database"
+}
+
+[Load Balancer] --> [k8s node]
+[k8s node] --> [Database]
+[k8s node] --> [Analytics Database]
+[k8s node] --> [External systems]
+
+@enduml
